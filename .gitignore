@@ -1,1 +1,6 @@
 /res
+/backend/resmgmt/db.sqlite3
+__pycache__/
+**/__pycache__/  
+/backend/resmgmt/api/migrations
+/py_client
