@@ -1,18 +1,14 @@
 import json
 from django.http import JsonResponse
+from menu.models import Menu
 
 def api_home(request, *args, **kwargs):
-    print(request.GET)
-    print(request.POST)
-    body = request.body # byte string of the JSON data
+    model_data = Menu.objects.all().order_by("?").first()
     data = {}
-    try:
-        data = json.loads(body) # string of JSON data -> Python Dict
-    except:
-        pass
-    print(data)
-    # print(body)
-    data['params'] = dict(request.GET)
-    data['headers'] = dict(request.headers)
-    data['content_type'] = request.content_type
+    if model_data:
+        data['id'] = model_data.id
+        data['title'] = model_data.title
+        data['content'] = model_data.content
+        data['price'] = model_data.price
     return JsonResponse(data)
+    
