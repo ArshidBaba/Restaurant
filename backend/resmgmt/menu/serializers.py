@@ -14,5 +14,9 @@ class MenuSerializer(serializers.ModelSerializer):
         ]
 
     def get_my_discount(self, obj):
-        print(obj.id)
+        if not hasattr(obj, 'id'):
+            return None
+        if not isinstance(obj, Menu):
+            return None
         return obj.get_discount()
+    

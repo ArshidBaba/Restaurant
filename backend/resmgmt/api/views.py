@@ -7,23 +7,16 @@ from rest_framework.decorators import api_view
 
 from menu.serializers import MenuSerializer
 
-@api_view(["GET"])
+@api_view(["POST"])
 def api_home(request, *args, **kwargs):
     """
     DRF API View
     """
-    instance = Menu.objects.all().order_by("?").first()
-    data = {}
-    if instance:
-        # data = model_to_dict(model_data, fields=['id', 'title', 'price' 'sale_price'])
-        data = MenuSerializer(instance).data
-    return Response(data)
-    # model_data = Menu.objects.all().order_by("?").first()
-    # data = {}
-    # if model_data:
-    #     data['id'] = model_data.id
-    #     data['title'] = model_data.title
-    #     data['content'] = model_data.content
-    #     data['price'] = model_data.price
-    # return JsonResponse(data)
+    serializer = MenuSerializer(data=request.data)
+    if serializer.is_valid(raise_exception=True):
+        # instance = serializer.save()
+        # print(instance)
+        print(serializer.data)
+        return Response(serializer.data)
+    return Response({"Invalid": "This is not valid data"}, status=400)
     
