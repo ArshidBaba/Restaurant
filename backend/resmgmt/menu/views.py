@@ -24,10 +24,30 @@ class MenuDetailAPIView(generics.RetrieveAPIView):
     serializer_class = MenuSerializer
 
 
-class MenuListAPIView(generics.ListAPIView):
-    """
-    Not gonna use this method
-    """
+class MenuUpdateAPIView(generics.UpdateAPIView):
+    queryset = Menu.objects.all()
+    serializer_class = MenuSerializer
+    lookup_field = 'pk'
+
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        if not instance.content:
+            instance.content = instance.title
+        
+            
+class MenuDestroyAPIView(generics.DestroyAPIView):
+    queryset = Menu.objects.all()
+    serializer_class = MenuSerializer
+    lookup_field = 'pk'
+
+    def perform_destroy(self, instance):
+        super().perform_destroy(instance)
+        
+
+# class MenuListAPIView(generics.ListAPIView):
+#     """
+#     Not gonna use this method
+#     """
 @api_view(['GET', 'POST'])
 def menu_alt_view(request, pk=None, *args, **kwargs):
     method = request.method
