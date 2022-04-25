@@ -1,4 +1,5 @@
-from rest_framework import generics
+from re import A
+from rest_framework import generics, permissions, authentication
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.shortcuts import get_object_or_404
@@ -9,7 +10,8 @@ from .serializers import MenuSerializer
 class MenuListCreateAPIView(generics.ListCreateAPIView):
     queryset = Menu.objects.all()
     serializer_class = MenuSerializer
-
+    authentication_classes = [authentication.SessionAuthentication]
+    permission_classes = [permissions.DjangoModelPermissions]
     def perform_create(self, serializer):
         # print(serializer.validated_data)
         title = serializer.validated_data.get('title')
@@ -48,6 +50,9 @@ class MenuDestroyAPIView(generics.DestroyAPIView):
 #     """
 #     Not gonna use this method
 #     """
+
+
+
 @api_view(['GET', 'POST'])
 def menu_alt_view(request, pk=None, *args, **kwargs):
     method = request.method
