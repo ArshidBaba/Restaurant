@@ -6,12 +6,13 @@ from django.shortcuts import get_object_or_404
 
 from .models import Menu
 from .serializers import MenuSerializer
+from .permissions import IsStaffEditorPermission
 
 class MenuListCreateAPIView(generics.ListCreateAPIView):
     queryset = Menu.objects.all()
     serializer_class = MenuSerializer
     authentication_classes = [authentication.SessionAuthentication]
-    permission_classes = [permissions.DjangoModelPermissions]
+    permission_classes = [permissions.IsAdminUser, IsStaffEditorPermission]
     def perform_create(self, serializer):
         # print(serializer.validated_data)
         title = serializer.validated_data.get('title')
