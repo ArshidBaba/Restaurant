@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.shortcuts import get_object_or_404
 
+from api.authentication import TokenAuthentication
 from .models import Menu
 from .serializers import MenuSerializer
 from .permissions import IsStaffEditorPermission
@@ -11,7 +12,7 @@ from .permissions import IsStaffEditorPermission
 class MenuListCreateAPIView(generics.ListCreateAPIView):
     queryset = Menu.objects.all()
     serializer_class = MenuSerializer
-    authentication_classes = [authentication.SessionAuthentication]
+    authentication_classes = [authentication.SessionAuthentication, TokenAuthentication]
     permission_classes = [permissions.IsAdminUser, IsStaffEditorPermission]
     def perform_create(self, serializer):
         # print(serializer.validated_data)
