@@ -1,19 +1,21 @@
-from re import A
-from rest_framework import generics, permissions, authentication
+from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.shortcuts import get_object_or_404
 
-from api.authentication import TokenAuthentication
+from api.mixins import StaffEditorPermissionMixin
+# from api.authentication import TokenAuthentication
 from .models import Menu
 from .serializers import MenuSerializer
-from .permissions import IsStaffEditorPermission
+# from api.permissions import IsStaffEditorPermission
 
-class MenuListCreateAPIView(generics.ListCreateAPIView):
+class MenuListCreateAPIView(
+    StaffEditorPermissionMixin,
+    generics.ListCreateAPIView):
     queryset = Menu.objects.all()
     serializer_class = MenuSerializer
     # authentication_classes = [authentication.SessionAuthentication, TokenAuthentication]
-    permission_classes = [permissions.IsAdminUser, IsStaffEditorPermission]
+    # permission_classes = [permissions.IsAdminUser, IsStaffEditorPermission]
     def perform_create(self, serializer):
         # print(serializer.validated_data)
         title = serializer.validated_data.get('title')
@@ -23,17 +25,21 @@ class MenuListCreateAPIView(generics.ListCreateAPIView):
         serializer.save(content=content)
         # return super().perform_create(serializer)
 
-class MenuDetailAPIView(generics.RetrieveAPIView):
+class MenuDetailAPIView(
+    StaffEditorPermissionMixin,
+    generics.RetrieveAPIView):
     queryset = Menu.objects.all()
     serializer_class = MenuSerializer
-    permission_classes = [permissions.IsAdminUser, IsStaffEditorPermission]
+    # permission_classes = [permissions.IsAdminUser, IsStaffEditorPermission]
 
 
-class MenuUpdateAPIView(generics.UpdateAPIView):
+class MenuUpdateAPIView(
+    StaffEditorPermissionMixin,
+    generics.UpdateAPIView):
     queryset = Menu.objects.all()
     serializer_class = MenuSerializer
     lookup_field = 'pk'
-    permission_classes = [permissions.IsAdminUser, IsStaffEditorPermission]
+    # permission_classes = [permissions.IsAdminUser, IsStaffEditorPermission]
 
     def perform_update(self, serializer):
         instance = serializer.save()
@@ -41,11 +47,13 @@ class MenuUpdateAPIView(generics.UpdateAPIView):
             instance.content = instance.title
         
             
-class MenuDestroyAPIView(generics.DestroyAPIView):
+class MenuDestroyAPIView(
+    StaffEditorPermissionMixin,
+    generics.DestroyAPIView):
     queryset = Menu.objects.all()
     serializer_class = MenuSerializer
     lookup_field = 'pk'
-    permission_classes = [permissions.IsAdminUser, IsStaffEditorPermission]
+    # permission_classes = [permissions.IsAdminUser, IsStaffEditorPermission]
 
     def perform_destroy(self, instance):
         super().perform_destroy(instance)
